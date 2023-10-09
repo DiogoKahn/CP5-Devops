@@ -6,7 +6,7 @@ import os
 
 # load_dotenv()
 
-def connection():
+def create_connection():
     # connection = oracledb.connect(user=os.getenv("ORCL_USER"), password=os.getenv("ORCL_PASS"), dsn=os.getenv("ORCL_CS"))
     connection = oracledb.connect(user="rm92928", password="061003", dsn="oracle.fiap.com.br/ORCL")
     return connection
@@ -212,7 +212,7 @@ def delete_banco(id):
 
 if __name__ == '__main__':
 
-    connection = connection()
+    connection = create_connection()
 
     # Create a demo table
     create_schema()
