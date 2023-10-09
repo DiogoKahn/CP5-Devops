@@ -11,6 +11,9 @@ def create_connection():
     connection = oracledb.connect(user="rm92928", password="061003", dsn="oracle.fiap.com.br/ORCL")
     return connection
 
+connection = create_connection()
+cursor = connection.cursor()
+
 def create_schema():
     cursor.execute(f"""
                    begin
@@ -200,10 +203,6 @@ def delete_banco(id):
     return jsonify({'message': 'Bank deleted'})
 
 if __name__ == '__main__':
-
-    connection = create_connection()
-
-    cursor = connection.cursor()
     
     create_schema()
 
