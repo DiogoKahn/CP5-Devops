@@ -12,7 +12,6 @@ def create_connection():
     return connection
 
 def create_schema():
-    cursor = connection.cursor()
     cursor.execute(f"""
                    begin
                     begin
@@ -59,7 +58,6 @@ def index():
 # get all users
 @app.route('/usuario', methods=['GET'])
 def get_all_usuarios():
-    cursor = connection.cursor()
     # verificando se existe um banco cadastrado para o usuário
     cursor.execute("SELECT * from banco")
     rows = cursor.fetchall()
@@ -97,7 +95,6 @@ def get_all_usuarios():
 # get user by id
 @app.route('/usuario/<int:id>', methods=['GET'])
 def get_usuario_by_id(id):
-    cursor = connection.cursor()
     cursor.execute(f"SELECT * from banco where id_usuario = {id}")
     rows = cursor.fetchall()
     if len(rows) == 0:
@@ -140,7 +137,6 @@ def get_usuario_by_id(id):
 # create user
 @app.route('/usuario', methods=['POST'])
 def create_usuario():
-    cursor = connection.cursor()
     cursor.execute(f"insert into usuario (nome) values ('{request.json['nome']}')")
     cursor.execute(f"select * from usuario where nome = '{request.json['nome']}'")
     r = [dict((cursor.description[i][0], value)
@@ -150,7 +146,6 @@ def create_usuario():
 # update user
 @app.route('/usuario/<int:id>', methods=['PUT'])
 def update_usuario(id):
-    cursor = connection.cursor()
     cursor.execute(f"update usuario set nome = '{request.json['nome']}' where id_usuario = {id}")
     cursor.execute(f"select * from usuario where id_usuario = {id}")
     r = [dict((cursor.description[i][0], value)
@@ -160,7 +155,6 @@ def update_usuario(id):
 # delete user
 @app.route('/usuario/<int:id>', methods=['DELETE'])
 def delete_usuario(id):
-    cursor = connection.cursor()
     cursor.execute(f"delete from banco where id_usuario = {id}")
     cursor.execute(f"delete from usuario where id_usuario = {id}")
     return jsonify({'message': 'User deleted'})
@@ -168,7 +162,6 @@ def delete_usuario(id):
 # get all banks
 @app.route('/banco', methods=['GET'])
 def get_all_bancos():
-    cursor = connection.cursor()
     cursor.execute("select * from banco")
     r = [dict((cursor.description[i][0], value)
               for i, value in enumerate(row)) for row in cursor.fetchall()]
@@ -177,7 +170,6 @@ def get_all_bancos():
 # get bank by id
 @app.route('/banco/<int:id>', methods=['GET'])
 def get_banco_by_id(id):
-    cursor = connection.cursor()
     cursor.execute(f"select * from banco where id_banco = {id}")
     r = [dict((cursor.description[i][0], value)
               for i, value in enumerate(row)) for row in cursor.fetchall()]
@@ -186,7 +178,6 @@ def get_banco_by_id(id):
 # create bank
 @app.route('/banco', methods=['POST'])
 def create_banco():
-    cursor = connection.cursor()
     cursor.execute(f"insert into banco (nome, saldo, id_usuario) values ('{request.json['nome']}', {request.json['saldo']}, {request.json['id_usuario']})")
     cursor.execute(f"select * from banco where nome = '{request.json['nome']}'")
     r = [dict((cursor.description[i][0], value)
@@ -196,7 +187,6 @@ def create_banco():
 # update bank
 @app.route('/banco/<int:id>', methods=['PUT'])
 def update_banco(id):
-    cursor = connection.cursor()
     cursor.execute(f"update banco set nome = '{request.json['nome']}', saldo = {request.json['saldo']}, id_usuario = {request.json['id_usuario']} where id_banco = {id}")
     cursor.execute(f"select * from banco where id_banco = {id}")
     r = [dict((cursor.description[i][0], value)
@@ -206,7 +196,6 @@ def update_banco(id):
 # delete bank
 @app.route('/banco/<int:id>', methods=['DELETE'])
 def delete_banco(id):
-    cursor = connection.cursor()
     cursor.execute(f"delete from banco where id_banco = {id}")
     return jsonify({'message': 'Bank deleted'})
 
@@ -214,9 +203,8 @@ if __name__ == '__main__':
 
     connection = create_connection()
 
-    # Create a demo table
+    cursor = connection.cursor()
+    
     create_schema()
 
-    # Start a webserver
-    # app.run(port=int(os.environ.get('PORT', '8080')))
     app.run(port=8080)
